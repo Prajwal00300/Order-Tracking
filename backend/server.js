@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database Connection 
+// Database Connection  
 connectDb();
 
 // Test Route
