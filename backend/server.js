@@ -14,8 +14,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
-connectDb();
+// Run database connection check on every request for Serverless
+app.use(async (req, res, next) => {
+    await connectDb();
+    next();
+});
 
 
 app.get("/", (req, res) => {

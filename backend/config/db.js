@@ -1,24 +1,21 @@
 import mongoose from "mongoose";
 
 
-let isConnected = false;
-
 const connectDb = async () => {
-    if (isConnected) {
+    // readyState 1 means fully connected
+    if (mongoose.connection.readyState === 1) {
         return;
     }
 
     try {
-        const db = await mongoose.connect(process.env.MONGODB_URI, {
-            serverSelectionTimeoutMS: 5000 // Fail quickly if IP is blocked
+        await mongoose.connect(process.env.MONGODB_URI, {
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000,
         });
-        isConnected = db.connections[0].readyState === 1;
         console.log("Database connected successfully");
     }
     catch (error) {
         console.error("🔥 CRITICAL DB ERROR:", error.message);
-        console.error("1. Check if MONGODB_URI is exactly correct in Vercel without quotes.");
-        console.error("2. Check if MongoDB Atlas Network Access is set to 0.0.0.0/0");
     }
 }
 
