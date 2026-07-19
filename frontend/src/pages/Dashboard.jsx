@@ -125,9 +125,10 @@ const Dashboard = () => {
                     className="btn btn-outline refresh-btn" 
                     onClick={() => fetchOrders(true)}
                     disabled={refreshing || loading}
+                    style={{ minWidth: '120px' }}
                 >
                     <RefreshCw size={16} className={refreshing ? "spin" : ""} />
-                    Refresh
+                    {refreshing ? "Refreshing..." : "Refresh"}
                 </button>
             </div>
 
@@ -225,6 +226,10 @@ const Dashboard = () => {
                 }
                 .spin {
                     animation: spin 1s linear infinite;
+                }
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
                 }
                 .pagination {
                     display: flex;
