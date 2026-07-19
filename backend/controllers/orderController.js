@@ -1,4 +1,5 @@
 import Order from '../models/Order.js';
+import OrderStatusHistory from '../models/OrderStatusHistory.js';
 
 
 export const createOrder = async (req, res) => {
@@ -157,6 +158,25 @@ export const deleteOrder = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Server Error: Could not delete order',
+            error: error.message
+        });
+    }
+};
+
+export const getOrderHistory = async (req, res) => {
+    try {
+        const history = await OrderStatusHistory.find({ orderId: req.params.id })
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            count: history.length,
+            data: history
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Server Error: Could not fetch order history',
             error: error.message
         });
     }

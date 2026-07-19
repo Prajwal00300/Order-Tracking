@@ -8,6 +8,7 @@ import FilterDropdown from "../components/FilterDropdown";
 import Loader from "../components/Loader";
 import EmptyState from "../components/EmptyState";
 import DeleteModal from "../components/DeleteModal";
+import HistoryModal from "../components/HistoryModal";
 
 const Dashboard = () => {
     const [orders, setOrders] = useState([]);
@@ -27,6 +28,10 @@ const Dashboard = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [orderToDelete, setOrderToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    // History Modal State
+    const [historyModalOpen, setHistoryModalOpen] = useState(false);
+    const [orderForHistory, setOrderForHistory] = useState(null);
 
     const statusOptions = [
         { label: "Placed", value: "PLACED" },
@@ -77,6 +82,11 @@ const Dashboard = () => {
     const handleDeleteClick = (id) => {
         setOrderToDelete(id);
         setDeleteModalOpen(true);
+    };
+
+    const handleHistoryClick = (id) => {
+        setOrderForHistory(id);
+        setHistoryModalOpen(true);
     };
 
     const confirmDelete = async () => {
@@ -150,7 +160,11 @@ const Dashboard = () => {
                         />
                     ) : (
                         <>
-                            <OrderTable orders={orders} onDeleteClick={handleDeleteClick} />
+                            <OrderTable 
+                                orders={orders} 
+                                onDeleteClick={handleDeleteClick} 
+                                onHistoryClick={handleHistoryClick}
+                            />
                             
                             {/* Pagination Controls */}
                             {totalPages > 1 && (
@@ -186,6 +200,12 @@ const Dashboard = () => {
                 onConfirm={confirmDelete}
                 orderId={orderToDelete}
                 isDeleting={isDeleting}
+            />
+
+            <HistoryModal 
+                isOpen={historyModalOpen}
+                onClose={() => setHistoryModalOpen(false)}
+                orderId={orderForHistory}
             />
 
             <style>{`

@@ -27,14 +27,35 @@ export const getOrders = async (status = '', search = '', page = 1, limit = 5) =
 /**
  * Fetch scheduler execution logs
  */
-export const getSchedulerLogs = async (page = 1, limit = 20) => {
+export const getSchedulerLogs = async (page = 1, limit = 10) => {
   try {
     const response = await fetch(`${API_URL}/scheduler/logs?page=${page}&limit=${limit}`);
-    if (!response.ok) throw new Error('Failed to fetch scheduler logs');
-    const data = await response.json();
-    return data;
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch scheduler logs');
+    }
+    
+    return await response.json();
   } catch (error) {
     console.error('Error in getSchedulerLogs:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch status history for a specific order
+ */
+export const getOrderHistory = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/orders/${id}/history`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch order history');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error in getOrderHistory:', error);
     throw error;
   }
 };

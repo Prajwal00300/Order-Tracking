@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Edit2, Trash2, Clock } from "lucide-react";
+import { Edit2, Trash2, Clock, Activity } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 
-const OrderTable = ({ orders, onDeleteClick }) => {
+const OrderTable = ({ orders, onDeleteClick, onHistoryClick }) => {
     return (
         <div className="table-container glass-panel">
             <table className="order-table">
@@ -43,6 +43,13 @@ const OrderTable = ({ orders, onDeleteClick }) => {
                             </td>
                             <td className="actions-col">
                                 <div className="action-buttons">
+                                    <button 
+                                        className="action-btn history-btn" 
+                                        onClick={() => onHistoryClick(order._id)}
+                                        title="View History"
+                                    >
+                                        <Activity size={16} />
+                                    </button>
                                     <Link to={`/edit/${order._id}`} className="action-btn edit-btn" title="Edit Order">
                                         <Edit2 size={16} />
                                     </Link>
@@ -138,6 +145,10 @@ const OrderTable = ({ orders, onDeleteClick }) => {
                 .edit-btn:hover {
                     background: rgba(59, 130, 246, 0.2);
                     color: #60a5fa;
+                }
+                .history-btn:hover {
+                    background: rgba(16, 185, 129, 0.2);
+                    color: #34d399;
                 }
                 .delete-btn:hover {
                     background: rgba(239, 68, 68, 0.2);
