@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Package, PlusCircle, LayoutDashboard } from "lucide-react";
+import { Package, PlusCircle, LayoutDashboard, Activity } from "lucide-react";
 
 const Navbar = () => {
     const location = useLocation();
@@ -24,6 +24,10 @@ const Navbar = () => {
                     <Link to="/create" className={isActive("/create")}>
                         <PlusCircle size={18} />
                         New Order
+                    </Link>
+                    <Link to="/logs" className={isActive("/logs")}>
+                        <Activity size={18} />
+                        Logs
                     </Link>
                 </nav>
             </div>

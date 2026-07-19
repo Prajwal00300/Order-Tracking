@@ -1,17 +1,40 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 /**
- * Fetch all orders, with optional status filter
+ * Fetch all orders, with optional status filter, search query, and pagination
  */
-export const getOrders = async (status = '') => {
+export const getOrders = async (status = '', search = '', page = 1, limit = 5) => {
   try {
-    const url = status ? `${API_URL}/orders?status=${status}` : `${API_URL}/orders`;
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString()
+    });
+    
+    if (status) queryParams.append('status', status);
+    if (search) queryParams.append('search', search);
+
+    const url = `${API_URL}/orders?${queryParams.toString()}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error('Failed to fetch orders');
     const data = await response.json();
     return data;
   } catch (error) {
     console.error('Error in getOrders:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch scheduler execution logs
+ */
+export const getSchedulerLogs = async (page = 1, limit = 20) => {
+  try {
+    const response = await fetch(`${API_URL}/scheduler/logs?page=${page}&limit=${limit}`);
+    if (!response.ok) throw new Error('Failed to fetch scheduler logs');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error in getSchedulerLogs:', error);
     throw error;
   }
 };

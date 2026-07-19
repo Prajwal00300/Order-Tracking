@@ -15,9 +15,13 @@ const Dashboard = () => {
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     
-    // Filters and Search
+    // Filters, Search, Pagination
     const [statusFilter, setStatusFilter] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalOrders, setTotalOrders] = useState(0);
     
     // Delete Modal State
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -38,8 +42,10 @@ const Dashboard = () => {
         
         setError(null);
         try {
-            const data = await getOrders(statusFilter);
+            const data = await getOrders(statusFilter, debouncedSearch, page);
             setOrders(data.data || []);
+            setTotalPages(data.totalPages || 1);
+            setTotalOrders(data.total || 0);
         } catch (err) {
             setError(err.message || "Failed to fetch orders.");
         } finally {
@@ -48,9 +54,25 @@ const Dashboard = () => {
         }
     };
 
+    // Debounce search query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+            setPage(1); // Reset to page 1 on new search
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Refetch when dependencies change
     useEffect(() => {
         fetchOrders();
-    }, [statusFilter]); // Refetch when status filter changes
+    }, [statusFilter, debouncedSearch, page]);
+
+    // Reset page when status changes
+    const handleStatusChange = (status) => {
+        setStatusFilter(status);
+        setPage(1);
+    };
 
     const handleDeleteClick = (id) => {
         setOrderToDelete(id);
@@ -63,8 +85,8 @@ const Dashboard = () => {
         setIsDeleting(true);
         try {
             await deleteOrder(orderToDelete);
-            // Optimistically update UI
-            setOrders(orders.filter(o => o._id !== orderToDelete));
+            // Re-fetch to ensure pagination stays correct
+            fetchOrders(true);
             setDeleteModalOpen(false);
             setOrderToDelete(null);
         } catch (err) {
@@ -73,16 +95,6 @@ const Dashboard = () => {
             setIsDeleting(false);
         }
     };
-
-    // Filter orders locally by search query
-    const filteredOrders = orders.filter(order => {
-        if (!searchQuery) return true;
-        const query = searchQuery.toLowerCase();
-        return (
-            order._id.toLowerCase().includes(query) ||
-            order.customerName.toLowerCase().includes(query)
-        );
-    });
 
     return (
         <div className="dashboard">
@@ -105,7 +117,7 @@ const Dashboard = () => {
                     />
                     <FilterDropdown 
                         value={statusFilter} 
-                        onChange={setStatusFilter} 
+                        onChange={handleStatusChange} 
                         options={statusOptions} 
                     />
                 </div>
@@ -130,13 +142,39 @@ const Dashboard = () => {
                 <div className="table-wrapper animate-fade-in" style={{ animationDelay: '0.1s' }}>
                     {loading && !refreshing ? (
                         <Loader message="Loading orders..." />
-                    ) : filteredOrders.length === 0 ? (
+                    ) : orders.length === 0 ? (
                         <EmptyState 
                             title="No orders found" 
-                            description={searchQuery || statusFilter ? "Try adjusting your filters to find what you're looking for." : "You don't have any orders yet. Create one to get started."} 
+                            description={debouncedSearch || statusFilter ? "Try adjusting your filters to find what you're looking for." : "You don't have any orders yet. Create one to get started."} 
                         />
                     ) : (
-                        <OrderTable orders={filteredOrders} onDeleteClick={handleDeleteClick} />
+                        <>
+                            <OrderTable orders={orders} onDeleteClick={handleDeleteClick} />
+                            
+                            {/* Pagination Controls */}
+                            {totalPages > 1 && (
+                                <div className="pagination">
+                                    <span className="text-muted">Showing {orders.length} of {totalOrders} orders</span>
+                                    <div className="pagination-controls">
+                                        <button 
+                                            className="btn btn-outline" 
+                                            disabled={page === 1}
+                                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        >
+                                            Previous
+                                        </button>
+                                        <span className="page-indicator">Page {page} of {totalPages}</span>
+                                        <button 
+                                            className="btn btn-outline" 
+                                            disabled={page === totalPages}
+                                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             )}
@@ -187,6 +225,26 @@ const Dashboard = () => {
                 }
                 .spin {
                     animation: spin 1s linear infinite;
+                }
+                .pagination {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 16px;
+                    background: rgba(0, 0, 0, 0.2);
+                    border-bottom-left-radius: var(--radius-md);
+                    border-bottom-right-radius: var(--radius-md);
+                    border-top: 1px solid var(--border-color);
+                }
+                .pagination-controls {
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                }
+                .page-indicator {
+                    font-size: 0.875rem;
+                    color: var(--text-main);
+                    font-weight: 500;
                 }
             `}</style>
         </div>

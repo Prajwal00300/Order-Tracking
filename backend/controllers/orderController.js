@@ -34,18 +34,42 @@ export const createOrder = async (req, res) => {
 
 export const getOrders = async (req, res) => {
     try {
-        const { status } = req.query;
+        const { status, search, page = 1, limit = 5 } = req.query;
 
         const query = {};
         if (status) {
             query.orderStatus = status;
         }
+        
+        if (search) {
+            // Check if search string is a valid MongoDB ObjectId (24 hex characters)
+            const isObjectId = /^[0-9a-fA-F]{24}$/.test(search);
+            
+            if (isObjectId) {
+                query.$or = [
+                    { _id: search },
+                    { customerName: { $regex: search, $options: 'i' } }
+                ];
+            } else {
+                query.customerName = { $regex: search, $options: 'i' };
+            }
+        }
 
-        const orders = await Order.find(query).sort({ createdAt: -1 });
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const orders = await Order.find(query)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
+            
+        const total = await Order.countDocuments(query);
 
         return res.status(200).json({
             success: true,
             count: orders.length,
+            total,
+            totalPages: Math.ceil(total / parseInt(limit)),
+            currentPage: parseInt(page),
             data: orders
         });
     } catch (error) {
