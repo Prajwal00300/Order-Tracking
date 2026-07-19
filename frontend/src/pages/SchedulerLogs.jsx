@@ -48,9 +48,10 @@ const SchedulerLogs = () => {
                     className="btn btn-outline" 
                     onClick={() => fetchLogs(true)}
                     disabled={refreshing || loading}
+                    style={{ minWidth: '120px' }}
                 >
                     <RefreshCw size={16} className={refreshing ? "spin" : ""} />
-                    Refresh
+                    {refreshing ? "Refreshing..." : "Refresh"}
                 </button>
             </div>
 
@@ -165,6 +166,10 @@ const SchedulerLogs = () => {
                 .font-mono { font-family: ui-monospace, SFMono-Regular, monospace; }
                 .font-medium { font-weight: 500; }
                 .spin { animation: spin 1s linear infinite; }
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
                 
                 .order-table {
                     width: 100%;
