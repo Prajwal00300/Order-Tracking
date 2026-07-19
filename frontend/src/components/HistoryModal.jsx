@@ -64,7 +64,7 @@ const HistoryModal = ({ isOpen, onClose, orderId }) => {
                                     {index !== history.length - 1 && <div className="timeline-line"></div>}
                                     <div className="timeline-content">
                                         <div className="timeline-date">
-                                            {new Date(event.createdAt).toLocaleString()}
+                                            {new Date(event.changedAt).toLocaleString()}
                                         </div>
                                         <div className="timeline-status-change">
                                             <StatusBadge status={event.previousStatus} />
