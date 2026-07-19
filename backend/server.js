@@ -32,6 +32,10 @@ app.use("/api/scheduler", schedulerRoutes);
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on Port ${PORT}`);
-}); 
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on Port ${PORT}`);
+    }); 
+}
+
+export default app; 
