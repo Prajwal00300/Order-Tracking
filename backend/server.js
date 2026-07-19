@@ -3,19 +3,20 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import connectDb from "./config/db.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-// Middleware
+
 app.use(cors());
 app.use(express.json());
 
-// Database Connection  
+
 connectDb();
 
-// Test Route
+
 app.get("/", (req, res) => {
     res.status(200).json({
         success: true,
@@ -23,7 +24,10 @@ app.get("/", (req, res) => {
     });
 });
 
-// Server
+
+app.use("/api/orders", orderRoutes);
+
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
