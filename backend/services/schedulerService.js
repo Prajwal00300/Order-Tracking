@@ -7,15 +7,29 @@ export const runSchedulerLogic = async () => {
     let ordersProcessed = 0;
 
     try {
-        const TEN_MINUTES = 10 * 60 * 1000;
         const now = Date.now();
 
-        const orders = await Order.find({ orderStatus: { $ne: 'DELIVERED' } });
+        // Find all orders that are eligible for automated status updates
+        const orders = await Order.find({ orderStatus: { $in: ['PLACED', 'PROCESSING'] } });
 
         for (const order of orders) {
+            // Determine the required time interval for the current status
+            let requiredDurationMs;
+            switch (order.orderStatus) {
+                case 'PLACED':
+                    requiredDurationMs = 10 * 60 * 1000; // 10 minutes
+                    break;
+                case 'PROCESSING':
+                    requiredDurationMs = 20 * 60 * 1000; // 20 minutes
+                    break;
+                default:
+                    continue; // Skip unrecognized statuses
+            }
+
+            // Check if order is older than the required duration (using updatedAt)
             const timeSinceLastUpdate = now - new Date(order.updatedAt).getTime();
 
-            if (timeSinceLastUpdate > TEN_MINUTES) {
+            if (timeSinceLastUpdate > requiredDurationMs) {
                 const previousStatus = order.orderStatus;
                 let newStatus = previousStatus;
 
@@ -25,12 +39,6 @@ export const runSchedulerLogic = async () => {
                         break;
                     case 'PROCESSING':
                         newStatus = 'READY_TO_SHIP';
-                        break;
-                    case 'READY_TO_SHIP':
-                        newStatus = 'SHIPPED';
-                        break;
-                    case 'SHIPPED':
-                        newStatus = 'DELIVERED';
                         break;
                     default:
                         break;
