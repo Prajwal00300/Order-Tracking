@@ -60,12 +60,14 @@ export const runSchedulerLogic = async () => {
             }
         }
 
-        await SchedulerLog.create({
-            startedAt,
-            completedAt: new Date(),
-            ordersProcessed,
-            status: 'SUCCESS'
-        });
+        if (ordersProcessed > 0) {
+            await SchedulerLog.create({
+                startedAt,
+                completedAt: new Date(),
+                ordersProcessed,
+                status: 'SUCCESS'
+            });
+        }
 
     } catch (error) {
         console.error('Scheduler Service Error:', error);
