@@ -4,6 +4,7 @@ import cors from "cors";
 
 import connectDb from "./config/db.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import schedulerRoutes from "./routes/schedulerRoutes.js";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 
 
 app.use("/api/orders", orderRoutes);
+app.use("/api/scheduler", schedulerRoutes);
 
 
 const PORT = process.env.PORT || 8000;
