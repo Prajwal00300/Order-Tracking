@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const EmptyState = () => {
     return (
         <div>
-            App
+            EmptyState
         </div>
     );
 };
 
-export default App;
+export default EmptyState;

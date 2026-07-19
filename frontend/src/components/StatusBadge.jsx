@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const StatusBadge = () => {
     return (
         <div>
-            App
+            StatusBadge
         </div>
     );
 };
 
-export default App;
+export default StatusBadge;

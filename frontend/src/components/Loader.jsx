@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const Loader = () => {
     return (
         <div>
-            App
+            Loader
         </div>
     );
 };
 
-export default App;
+export default Loader;

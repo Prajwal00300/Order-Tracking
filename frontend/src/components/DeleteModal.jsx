@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const DeleteModal = () => {
     return (
         <div>
-            App
+            DeleteModal
         </div>
     );
 };
 
-export default App;
+export default DeleteModal;

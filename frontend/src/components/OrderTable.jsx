@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const OrderTable = () => {
     return (
         <div>
-            App
+            OrderTable
         </div>
     );
 };
 
-export default App;
+export default OrderTable;

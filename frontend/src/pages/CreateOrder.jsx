@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const CreateOrder = () => {
     return (
         <div>
-            App
+            CreateOrder
         </div>
     );
 };
 
-export default App;
+export default CreateOrder;

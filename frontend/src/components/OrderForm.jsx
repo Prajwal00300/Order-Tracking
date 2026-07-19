@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const OrderForm = () => {
     return (
         <div>
-            App
+            OrderForm
         </div>
     );
 };
 
-export default App;
+export default OrderForm;

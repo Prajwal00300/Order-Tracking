@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const SearchBar = () => {
     return (
         <div>
-            App
+            SearchBar
         </div>
     );
 };
 
-export default App;
+export default SearchBar;

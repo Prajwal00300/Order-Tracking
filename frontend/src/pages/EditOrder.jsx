@@ -1,12 +1,11 @@
 import React from "react";
-import "./App.css";
 
-const App = () => {
+const EditOrder = () => {
     return (
         <div>
-            App
+            EditOrder
         </div>
     );
 };
 
-export default App;
+export default EditOrder;
