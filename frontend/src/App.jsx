@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import CreateOrder from "./pages/CreateOrder";
 import EditOrder from "./pages/EditOrder";
-import OrderHistory from "./pages/OrderHistory";
+
 import SchedulerLogs from "./pages/SchedulerLogs";
 
 import "./App.css";
@@ -19,7 +19,7 @@ const App = () => {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/create" element={<CreateOrder />} />
                         <Route path="/edit/:id" element={<EditOrder />} />
-                        <Route path="/history/:id" element={<OrderHistory />} />
+
                         <Route path="/logs" element={<SchedulerLogs />} />
                     </Routes>
                 </main>
