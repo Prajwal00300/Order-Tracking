@@ -41,11 +41,11 @@ export const getOrders = async (req, res) => {
         if (status) {
             query.orderStatus = status;
         }
-        
+
         if (search) {
             // Check if search string is a valid MongoDB ObjectId (24 hex characters)
             const isObjectId = /^[0-9a-fA-F]{24}$/.test(search);
-            
+
             if (isObjectId) {
                 query.$or = [
                     { _id: search },
@@ -62,7 +62,7 @@ export const getOrders = async (req, res) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(parseInt(limit));
-            
+
         const total = await Order.countDocuments(query);
 
         return res.status(200).json({
@@ -131,7 +131,7 @@ export const updateOrder = async (req, res) => {
     } catch (error) {
         return res.status(400).json({
             success: false,
-            message: 'Failed to update order',
+            message: 'Failed to update order ',
             error: error.message
         });
     }
